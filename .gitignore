@@ -161,3 +161,7 @@ cython_debug/
 
 # .DS_Store - this should be, but is not, included by default
 .DS_Store
+
+# Spotlight caches (I think) - duplicate files prefixed with "._" (bearing the same extension).
+# Having FFMpeg try to read these caused me no end of trouble at one point
+._*
