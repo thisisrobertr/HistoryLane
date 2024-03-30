@@ -1,0 +1,9 @@
+To-do list for histvisweb (continuation of historylane, and will be its version 2.0 - more rightly, its 1.0):
+
+1. Modify "threshold" attribute to add to a dedicated "everything else" category rather than just ignoring data - DONE, 3/13/24
+2. With the data thereby cleaned up, retool the graphs to look better and serve as a more useful distillation of browsing habits
+3. Add an Obsidian Notes-style scatterplot with each visit as a point in a site's particular orbit.
+4. Add a GUI enabling the user to manipulate the visualization/data.
+5. Retool the Vivaldi and Firefox scrapers' class structure to be more conducive to inheritance.
+6. Add support for constellations of related browser (Chrome variants, Firefox Developer Edition, etc. etc.)
+7. Add a feature to export CSV/JSON of browser history
