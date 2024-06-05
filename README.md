@@ -23,7 +23,6 @@ HistoryLane accepts the following options:
                       height is the value of a category
   -s                  Generate a scatterplot of website visits according to
                       two categories.
-  -l                  Generate a line plot similar to the scatterplot of -s.
   -p                  Generate a pie chart representing the share of your web
                       browsing occupied by each website.
   -w W                Specify the web browser to analyze. Present options
@@ -43,7 +42,7 @@ HistoryLane accepts the following options:
   -d USER_CATEGORY_B  This selects the category by which the y-axis is
                       organized.
 
-### The -w option and one of -b, -v, -l, -s, or -p must be specified. If the browser is a version of Mozilla Firefox or Vivaldi, -u must be supplied to set the user profile. In Vivaldi, these are accessible by their usernames; Firefox lists them under more esoteric names in about:profiles.
+### The -w option and one of -b, -s, or -p must be specified. If the browser is a version of Mozilla Firefox or a Chrome-based browser, -u must be supplied to set the user profile. In Chrome and derivatives, these are accessible by their usernames; Firefox lists them under more esoteric names in about:profiles.
 
 ### Macintosh users should note that macOS security will likely complain about full-disk access the first time you use this – HistoryLane requires that permission to access browser history data.
 
@@ -51,6 +50,6 @@ HistoryLane accepts the following options:
 
 ## III. Known Problems
 
-- The graphs will frequently be very busy.
 - Legends will occasionally overlap graphs or exceed the margins.
 - The command-line interface is admittedly unwieldly
+- As is, the scatterplot isn't particularly useful. More to come on that.
