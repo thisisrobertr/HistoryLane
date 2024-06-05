@@ -32,11 +32,25 @@ else:
     VIVALDI_DIR = USER_DIR + '.config/vivaldi'
 
 
+class VisitContainer:
+    url = None
+    title = None
+    time = 0
+    counter = 0
+    duration = 0
+    def __init__(self, url, title, time, counter, duration=0):
+        self.url = url
+        self.title = title
+        self.time = time
+        self.counter = counter
+        # Only Chrome-based browsers give this to me, and calculating it based on time is error prone.
+        # Thus only used with those.
+        self.duration = duration
+
 class SafariHistory:
     # Allow browser-wide attributes.
     def __init__(self):
         self.maximum_counter = -1
-        self.maximum_duration = -1
         self.entries = {}
 
 def get_all_safari_data():
@@ -98,23 +112,15 @@ def get_all_safari_data():
             domain = os.path.splitext(domain)[0]
             domain = domain.replace('www.', '')
 
-            duration = visits[i + 1][2] - visits[i][2]
-            if duration > 600:
-                # ten minutes
-                duration = 0
-            data =  {
-                'URL': history_item[1],
-                'title': visits[i][3],
-                'time': visits[i][2] - timestamp,
-                'counter': history_item[3],  # counter
-                'duration': duration
-            }
+            data = VisitContainer(
+                history_item[1],
+                visits[i][3],
+                visits[i][2] - timestamp,
+                history_item[3]
+            )
 
-            if data['counter'] > results.maximum_counter: 
-                results.maximum_counter = data['counter']
-
-            if data['duration'] > results.maximum_duration:
-                results.maximum_duration = data['duration']
+            if data.counter > results.maximum_counter: 
+                results.maximum_counter = data.counter
 
             if domain not in results.entries:
                 results.entries[domain] = [data]
@@ -122,21 +128,16 @@ def get_all_safari_data():
                 results.entries[domain].append(data)
 
         else:
-            duration = visits[i + 1][2] - visits[i][2]
+            data = VisitContainer 
+            (
+                history_item[1],
+                visits[i][3],
+                visits[i][2] - timestamp,
+                history_item[3]
+            )
 
-            data = {
-                'URL': history_item[1],
-                'title': visits[i][3],
-                'time': visits[i][2] - timestamp,
-                'counter': history_item[3],  # counter
-                'duration': duration
-            }
-
-            if data['counter'] > results.maximum_counter: 
-                results.maximum_counter = data['counter']
-
-            if data['duration'] > results.maximum_duration:
-                results.maximum_duration = data['duration']
+            if data.counter > results.maximum_counter: 
+                results.maximum_counter = data.counter
 
             results.entries[history_item[2]].append(data)
              
@@ -224,18 +225,21 @@ class VivaldiProfile:
                 continue
 
             time = VivaldiProfile.__chrome_to_safari_time(visit[2])
-            data = {
-                'URL': i[5],
-                'title': url_object[2],
-                'time': time,
-                'counter': url_object[3],
-                'duration': visit[4]  // 1_000_000  # microseconds to seconds.
-            }
-            if data['counter'] > self.maximum_counter:
-                self.maximum_counter = data['counter']
 
-            if data['duration'] > self.maximum_duration:
-                self.maximum_duration = data['duration']
+            data = VisitContainer
+            (
+                i[5],
+                url_object[2],
+                time,
+                url_object[3],
+                visit[4] # Duration, because I have that here firsthand.
+            )
+
+            if data.counter > self.maximum_counter:
+                self.maximum_counter = data.counter
+
+            if data.duration > self.maximum_duration:
+                self.maximum_duration = data.duration
 
             results[i[4]].append(data)
 
@@ -297,8 +301,6 @@ class FirefoxProfile:
     
     def __init__(self, path):
         self.cursor = sqlite3.connect(path + '/places.sqlite').cursor()
-        self.maximum_counter = -1
-        self.maximum_duration = -1
         self.entries = {}
         self.get_visits()  # 3/13/24: you'll have to do this anyway, so do it here.
         
@@ -316,20 +318,17 @@ class FirefoxProfile:
                 if domain not in self.entries:
                     self.entries[domain] = []
 
-                time = self.__mozilla_to_safari_time(i[3])
-                data = {
-                    'URL': None,
-                    'title': metadata[2],
-                    'time': time,
-                    'counter': i[4],
-                    'duration': self.__mozilla_to_safari_time(visits[counter + 1][3]) - time
-                }
+                time = self.__mozilla_to_safari_time(i[3]);
 
-                if data['counter'] > self.maximum_counter:
-                    self.maximum_counter = data['counter']
-
-                if data['duration'] > self.maximum_duration:
-                    self.maximum_duration = data['duration']
+                data = VisitContainer
+                (
+                    None,
+                    metadata[2],
+                    time,
+                    i[4]
+                )
+                if data.counter > self.maximum_counter:
+                    self.maximum_counter = data.counter
 
                 self.entries[domain].append(data)
         except IndexError:

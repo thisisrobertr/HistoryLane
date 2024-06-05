@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import matplotlib.patches
+# import matplotlib.patches
 
 def get_new_plot(name):
     f = plt.figure(name)

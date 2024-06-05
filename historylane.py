@@ -5,8 +5,7 @@ import browserhandler, chartgen
 import argparse
 import sys
 
-
-POSSIBLE_CATEGORIES = ['counter', 'duration', 'time']
+POSSIBLE_CATEGORIES = [None, 'counter', 'time']
 
 cmdline = argparse.ArgumentParser(sys.argv)
 cmdline.add_argument('-b', action=argparse.BooleanOptionalAction,
@@ -14,10 +13,6 @@ cmdline.add_argument('-b', action=argparse.BooleanOptionalAction,
 
 cmdline.add_argument('-s', action=argparse.BooleanOptionalAction,
                      help='Generate a scatterplot of website visits according to two categories.')
-
-cmdline.add_argument('-l',
-                     action=argparse.BooleanOptionalAction,
-                     help='Generate a line plot similar to the scatterplot of -s.')
 
 cmdline.add_argument('-p',
                      action=argparse.BooleanOptionalAction,
@@ -53,16 +48,16 @@ cmdline.add_argument('-c',
 cmdline.add_argument('-d',
                      dest='user_category_b',
                      type=str,
-                     default='duration',
+                     default=None,
                      help='This selects the category by which the y-axis is organized.')
 
 argv = cmdline.parse_args()
 
 if argv.user_category_a not in POSSIBLE_CATEGORIES:
-    raise RuntimeError('Please select one of counter, duration, or time for -c')
+    raise RuntimeError('Please select one of counter or time for -c')
 
 if argv.user_category_b not in POSSIBLE_CATEGORIES:
-    raise RuntimeError('Please select one of counter, duration, or time for -d')
+    raise RuntimeError('Please select one of counter or time for -d')
 
 history = None
 
@@ -98,7 +93,6 @@ elif argv.w.lower() == 'vivaldi':
         raise RuntimeError('The specified user profile does not exist')
     
     history = browserhandler.get_all_vivaldi_data()[argv.user_profile].entries
-    #history = history[argv.user_profile].entries  # 3/13/24 - consolidated into one line - double-defining a variable is redundant and confusing
     
 else:
     raise RuntimeError('Please select a supported browser with the -w option.')
@@ -108,8 +102,6 @@ if argv.b:
     chartgen.generate_barchart(history, th=argv.t) 
 if argv.s:
     chartgen.generate_scatterplot(history, hcategory=argv.user_category_a, vcategory=argv.user_category_b, th=argv.t)
-if argv.l:
-    chartgen.generate_linechart(history, hcategory=argv.user_category_a, vcategory=argv.user_category_b, th=argv.t)
 if argv.p:
     chartgen.generate_piechart(history, category=argv.user_category_a, th=argv.t)
 
